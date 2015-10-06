@@ -8,52 +8,45 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.starnamu.airlineschdule.comm.AirLineItems;
 import com.starnamu.airlineschdule.comm.CommonConventions;
+import com.starnamu.airlineschdule.gcm.GcmModul;
 import com.starnamu.airlineschdule.mainslidemenu.ChoiceStartAlarmMenu;
-import com.starnamu.airlineschdule.slidinglayout.AirlineItem;
+import com.starnamu.airlineschdule.parser.AirlineParser;
 import com.starnamu.projcet.airlineschedule.R;
-
-import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity implements CommonConventions {
 
     Toolbar toolbar;
-    ViewPager pager;
-    ViewPagerAdapter adapter;
+    public ViewPager pager;
+    public ViewPagerAdapter_1 adapter;
     SlidingTabLayout tabs;
-    CharSequence Titles[] = {"도착편", "출발편", "OAL 도착", "OAL 출발", "정보", "관심 Flight"};
-    int Numboftabs = Titles.length;
-    DrawerLayout dlDrawer;
+    CharSequence Titles[] = {"관심 Flight", "도착편", "출발편", "OAL 도착", "OAL 출발", "정보"};
+    public DrawerLayout dlDrawer;
     ActionBarDrawerToggle dtToggle;
-    ArrayList<AirlineItem> items;
     private static Context mainContext;
+    FrameLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mainContext = this;
-//        new UrlConnParser(this);
-
-        AirLineItems airLineItems = AirLineItems.getNewInstance();
-        items = airLineItems.getItems();
-
-        try {
-            stateUrlConnation();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new AirlineParser();
+        new GcmModul(this);
     }
 
     @Override
-    protected void onResume() {
+    protected void onStart() {
+        super.onStart();
+        startMetrialView();
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
     }
 
@@ -61,22 +54,7 @@ public class MainActivity extends ActionBarActivity implements CommonConventions
         return mainContext;
     }
 
-    private void stateUrlConnation() throws InterruptedException {
-        boolean state = true;
-        while (state) {
-            if (items == null) {
-                Log.i("from Intro_Activity", "Null");
-                state = true;
-            }
-            if (items != null) {
-                startMetrialView();
-                state = false;
-                Log.i("from Intro_Activity", "Not Null");
-            }
-        }
-    }
-
-    private void startMetrialView() {
+    public void startMetrialView() {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
@@ -84,8 +62,9 @@ public class MainActivity extends ActionBarActivity implements CommonConventions
         dtToggle = new ActionBarDrawerToggle(this, dlDrawer, R.string.app_name, R.string.hello_world);
         dlDrawer.setDrawerListener(dtToggle);
         pager = (ViewPager) findViewById(R.id.pager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, Numboftabs);
+        adapter = new ViewPagerAdapter_1(getSupportFragmentManager(), Titles);
         pager.setAdapter(adapter);
+
         tabs = (SlidingTabLayout) findViewById(R.id.tabs);
         tabs.setDistributeEvenly(true);
         tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
@@ -97,8 +76,14 @@ public class MainActivity extends ActionBarActivity implements CommonConventions
         });
         tabs.setViewPager(pager);
         ChoiceStartAlarmMenu choiceStartAlarmMenu = new ChoiceStartAlarmMenu(this);
-        FrameLayout drawer = (FrameLayout) findViewById(R.id.drawer);
+        drawer = (FrameLayout) findViewById(R.id.drawer);
         drawer.addView(choiceStartAlarmMenu);
+//        dlDrawer.closeDrawer(dtToggle);
+        dlDrawer.closeDrawer(drawer);
+    }
+
+    public void onCloseDrawer() {
+        dlDrawer.closeDrawer(drawer);
     }
 
     @Override

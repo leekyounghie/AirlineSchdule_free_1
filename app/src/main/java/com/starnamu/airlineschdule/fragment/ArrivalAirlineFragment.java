@@ -27,14 +27,14 @@ public class ArrivalAirlineFragment extends Fragment implements CommonConvention
     public AirLineAdapter airlineAdapter;
     ArrayList<AirlineItem> ItemList;
     ArrayList<AirlineItem> items;
-    int SetTime = 0;
     CustomTimeControll customTimeControll;
+    int CustomPostion;
 
     public ArrivalAirlineFragment() {
-
         AirLineItems airLineItems = AirLineItems.getNewInstance();
         this.items = airLineItems.getItems();
         customTimeControll = new CustomTimeControll();
+
 
     }
 
@@ -48,27 +48,26 @@ public class ArrivalAirlineFragment extends Fragment implements CommonConvention
         View v = inflater.inflate(R.layout.arrivalairlinefragment, container, false);
         ArrivalAirlineListView = (ListView) v.findViewById(R.id.ArrivalAirlineListView);
         ItemList = new ArrayList<>();
-        airlineAdapter = new AirLineAdapter(getActivity());
-        Log.i("Arr", "Strar");
 
-        if (SetTime <= 0) {
-            this.SetTime = customTimeControll.userChoiceTime(7200000L);
-        }
+        airlineAdapter = new AirLineAdapter(getActivity());
 
         for (int i = 0; i < items.size(); i++) {
             AirlineItem item = items.get(i);
             if (adCheck(item.getStriItem(10))) {
                 if (airlineCheck(item.getStriItem(0))) {
                     if (flightCheck(item.getStriItem(3))) {
-                        if (timeCheck(item.getStriItem(4)) > SetTime) {
-                            ItemList.add(item);
-                        }
+                        ItemList.add(item);
                     }
                 }
             }
-            airlineAdapter.setItemList(ItemList);
-            ArrivalAirlineListView.setAdapter(airlineAdapter);
         }
+        airlineAdapter.setItemList(ItemList);
+        ArrivalAirlineListView.setAdapter(airlineAdapter);
+        Log.i("ItemList.Size", Integer.toString(ItemList.size()));
+        CustomPostion = customTimeControll.onCustomCompare(ItemList);
+        ArrivalAirlineListView.requestFocusFromTouch();
+        ArrivalAirlineListView.setSelection(CustomPostion);
+
         return v;
     }
 
@@ -80,10 +79,23 @@ public class ArrivalAirlineFragment extends Fragment implements CommonConvention
     @Override
     public void onResume() {
         super.onResume();
+        ArrivalAirlineListView.requestFocusFromTouch();
+        ArrivalAirlineListView.setSelection(CustomPostion);
     }
 
-    public void choiceTime(int choiceTime) {
-        this.SetTime = choiceTime;
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /*Arraylist의 지료를 원하는 형태로 걸러낸다.*/
@@ -94,11 +106,6 @@ public class ArrivalAirlineFragment extends Fragment implements CommonConvention
         return false;
     }
 
-    private int timeCheck(String time) {
-        int intTime = Integer.parseInt(time);
-        return intTime;
-    }
-
     private boolean airlineCheck(String airline) {
         if (airline.equals("아시아나항공")) {
             return true;
@@ -107,9 +114,11 @@ public class ArrivalAirlineFragment extends Fragment implements CommonConvention
     }
 
     private boolean flightCheck(String flight) {
-        if (flight.length() <= 5) {
-            return true;
+        int flightNumber = Integer.parseInt(flight.substring(2, 5));
+
+        if ((627<=flightNumber)&&(flightNumber<=699)) {
+            return false;
         }
-        return false;
+        return true;
     }
 }

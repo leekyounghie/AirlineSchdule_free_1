@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -80,6 +82,7 @@ public class AlarmFragment extends Fragment implements CommonConventions {
         int mPostion;
         Context mContext;
         Handler handler = new Handler();
+        private int lastPosition = -1;
 
         public AlarmAirLineAdapter(Context context, AlarmDBControll alarmDBControll) {
             this.alarmDBControll = alarmDBControll;
@@ -114,6 +117,10 @@ public class AlarmFragment extends Fragment implements CommonConventions {
                 view.setBackgroundColor(Color.argb(255, 240, 255, 255));
             }
             view.setAlarmItems(items.get(position));
+
+            Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+            view.startAnimation(animation);
+            lastPosition = position;
 
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override

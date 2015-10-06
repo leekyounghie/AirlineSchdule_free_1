@@ -11,20 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="alram" />
-
-    <Button
-        android:id="@+id/mapViewBtn"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:text="mapView" />
+        android:text="관심 Flight 등록" />
 
     <Button
         android:id="@+id/infoBtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="info" />
+        android:text="정 보" />
 
 </LinearLayout>

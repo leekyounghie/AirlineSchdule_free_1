@@ -25,12 +25,10 @@ public class DepartureAirLineFragment extends Fragment implements CommonConventi
 
     public ListView DepartureAirlineListView;
     public AirLineAdapter airlineAdapter;
-    /*Temitems는 원하는 데이터로 ArrayList로 가공한 ArrayList */
     ArrayList<AirlineItem> ItemList;
-    /*items는 모든 항공사 정보가 들어있는 원본 ArrayList`*/
     ArrayList<AirlineItem> items;
-    int SetTime;
     CustomTimeControll customTimeControll;
+    int CustomPostion;
 
     public DepartureAirLineFragment() {
 
@@ -51,26 +49,24 @@ public class DepartureAirLineFragment extends Fragment implements CommonConventi
         DepartureAirlineListView = (ListView) v.findViewById(R.id.DepartureAirlineListView);
         ItemList = new ArrayList<>();
         airlineAdapter = new AirLineAdapter(getActivity());
-        Log.i("Dep", "Strar");
-
-        if (SetTime <= 0) {
-            this.SetTime = customTimeControll.userChoiceTime(7200000L);
-        }
 
         for (int i = 0; i < items.size(); i++) {
             AirlineItem item = items.get(i);
             if (adCheck(item.getStriItem(10))) {
                 if (airlineCheck(item.getStriItem(0))) {
                     if (flightCheck(item.getStriItem(3))) {
-                        if (timeCheck(item.getStriItem(4)) > SetTime) {
-                            ItemList.add(item);
-                        }
+                        ItemList.add(item);
                     }
                 }
             }
-            airlineAdapter.setItemList(ItemList);
-            DepartureAirlineListView.setAdapter(airlineAdapter);
         }
+        airlineAdapter.setItemList(ItemList);
+        DepartureAirlineListView.setAdapter(airlineAdapter);
+        Log.i("ItemList.Size", Integer.toString(ItemList.size()));
+        CustomPostion = customTimeControll.onCustomCompare(ItemList);
+        DepartureAirlineListView.requestFocusFromTouch();
+        DepartureAirlineListView.setSelection(CustomPostion);
+
         return v;
     }
 
@@ -82,10 +78,23 @@ public class DepartureAirLineFragment extends Fragment implements CommonConventi
     @Override
     public void onResume() {
         super.onResume();
+        DepartureAirlineListView.requestFocusFromTouch();
+        DepartureAirlineListView.setSelection(CustomPostion);
     }
 
-    public void choiceTime(int choiceTime) {
-        this.SetTime = choiceTime;
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /*Arraylist의 지료를 원하는 형태로 걸러낸다.*/
@@ -96,22 +105,18 @@ public class DepartureAirLineFragment extends Fragment implements CommonConventi
         return false;
     }
 
-    private int timeCheck(String time) {
-        int intTime = Integer.parseInt(time);
-        return intTime;
-    }
-
     private boolean airlineCheck(String airline) {
         if (airline.equals("아시아나항공")) {
             return true;
         }
         return false;
     }
-
     private boolean flightCheck(String flight) {
-        if (flight.length() <= 5) {
-            return true;
+        int flightNumber = Integer.parseInt(flight.substring(2, 5));
+
+        if ((627<=flightNumber)&&(flightNumber<=699)) {
+            return false;
         }
-        return false;
+        return true;
     }
 }

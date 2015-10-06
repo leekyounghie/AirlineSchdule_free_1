@@ -7,5 +7,10 @@
         android:id="@+id/DepartureAirlineListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:divider="#00ffffff"
+        android:smoothScrollbar="true"
+        android:fastScrollEnabled="true"
+        android:persistentDrawingCache="animation|scrolling"
+        android:layoutAnimation="@anim/listview_anim_control"
         />
 </RelativeLayout>

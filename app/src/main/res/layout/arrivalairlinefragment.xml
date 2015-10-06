@@ -8,27 +8,12 @@
         android:id="@+id/ArrivalAirlineListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:divider="#00ffffff"
+        android:smoothScrollbar="true"
+        android:fastScrollEnabled="true"
+        android:persistentDrawingCache="animation|scrolling"
+        android:layoutAnimation="@anim/listview_anim_control"
         />
 
 
 </RelativeLayout>
-    <!--
-
-     android:layout_above="@+id/button2"
-    <LinearLayout
-    android:background="@color/OptionListViewBacgroundColor"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:id="@+id/button2">
-
-    <fragment
-        android:background="@color/OptionListViewBacgroundColor"
-        android:id="@+id/fragment_place_a"
-        android:name="com.starnamu.airlineschdule.choiceoption.ChoiceOptionFragment"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
-    </LinearLayout>-->

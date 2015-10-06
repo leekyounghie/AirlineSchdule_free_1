@@ -25,10 +25,10 @@ public class OALDepartureAirLineFragment extends Fragment implements CommonConve
 
     public ListView OalDepartureAirlineListView;
     public AirLineAdapter airlineAdapter;
-    ArrayList<AirlineItem> Temitems;
+    ArrayList<AirlineItem> ItemList;
     ArrayList<AirlineItem> items;
-    int SetTime;
     CustomTimeControll customTimeControll;
+    int CustomPostion;
 
     public OALDepartureAirLineFragment() {
         AirLineItems airLineItems = AirLineItems.getNewInstance();
@@ -47,28 +47,26 @@ public class OALDepartureAirLineFragment extends Fragment implements CommonConve
         View v = inflater.inflate(R.layout.oaldepartureairlinefragment, container, false);
         OalDepartureAirlineListView = (ListView) v.findViewById(R.id.OalDepartureAirlineListView);
 
-        Temitems = new ArrayList<>();
+        ItemList = new ArrayList<>();
         airlineAdapter = new AirLineAdapter(getActivity());
-        Log.i("OalDep", "Strar");
 
-        if (SetTime <= 0) {
-            this.SetTime = customTimeControll.userChoiceTime(7200000L);
-        }
 
         for (int i = 0; i < items.size(); i++) {
             AirlineItem item = items.get(i);
             if (adCheck(item.getStriItem(10))) {
                 if (airlineCheck(item.getStriItem(0))) {
-                    if (flightCheck(item.getStriItem(3))) {
-                        if (timeCheck(item.getStriItem(4)) > SetTime) {
-                            Temitems.add(item);
-                        }
+                    if (flightCheck(item.getStriItem(7))) {
+                        ItemList.add(item);
                     }
                 }
             }
-            airlineAdapter.setItemList(Temitems);
-            OalDepartureAirlineListView.setAdapter(airlineAdapter);
         }
+        airlineAdapter.setItemList(ItemList);
+        OalDepartureAirlineListView.setAdapter(airlineAdapter);
+        Log.i("ItemList.Size", Integer.toString(ItemList.size()));
+        CustomPostion = customTimeControll.onCustomCompare(ItemList);
+        OalDepartureAirlineListView.requestFocusFromTouch();
+        OalDepartureAirlineListView.setSelection(CustomPostion);
         return v;
     }
 
@@ -80,15 +78,23 @@ public class OALDepartureAirLineFragment extends Fragment implements CommonConve
     @Override
     public void onResume() {
         super.onResume();
+        OalDepartureAirlineListView.requestFocusFromTouch();
+        OalDepartureAirlineListView.setSelection(CustomPostion);
     }
 
-    public void choiceTime(int choiceTime) {
-        this.SetTime = choiceTime;
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
-    private int timeCheck(String time) {
-        int intTime = Integer.parseInt(time);
-        return intTime;
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     private boolean adCheck(String airline) {
@@ -108,9 +114,9 @@ public class OALDepartureAirLineFragment extends Fragment implements CommonConve
     }
 
     private boolean flightCheck(String flight) {
-        if (flight.length() <= 6) {
-            return true;
+        if (flight.length() <= 2) {
+            return false;
         }
-        return false;
+        return true;
     }
 }

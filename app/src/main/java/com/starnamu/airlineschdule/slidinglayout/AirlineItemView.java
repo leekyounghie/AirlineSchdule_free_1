@@ -60,7 +60,6 @@ public class AirlineItemView extends FrameLayout {
 
         view.findViewById(R.id.alramBtn).setOnClickListener(onClickListener);
         view.findViewById(R.id.infoBtn).setOnClickListener(onClickListener);
-        view.findViewById(R.id.mapViewBtn).setOnClickListener(onClickListener);
         viewPager = ((ViewPager) ((Activity) mainContext).findViewById(R.id.pager));
         slidingLayoutView = (LinearLayout) view.findViewById(R.id.slidingLayout);
 
@@ -84,22 +83,23 @@ public class AirlineItemView extends FrameLayout {
         textView02.setOnClickListener(onClicktextView02);
     }
 
+
     OnClickListener onClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.alramBtn:
-//                    viewPager.setCurrentItem(4);
                     alarmDBControll.setDataTable(DAitem);
                     Toast.makeText(getContext(), "관심 Flight로 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                    if (isPageOpen == true) {
+                        slidingLayoutView.startAnimation(translateRightAnim);
+                        slidingLayoutView.setVisibility(GONE);
+                        isPageOpen = false;
+                    }
                     break;
 
                 case R.id.infoBtn:
                     viewPager.setCurrentItem(5);
-                    break;
-
-                case R.id.mapViewBtn:
-                    viewPager.setCurrentItem(6);
                     break;
             }
         }
@@ -115,6 +115,7 @@ public class AirlineItemView extends FrameLayout {
             }
         }
     };
+
 
     private String stringFormConversion(String str) {
         String Hour = str.substring(0, 2);

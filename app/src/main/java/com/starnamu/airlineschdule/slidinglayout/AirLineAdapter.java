@@ -4,7 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
+
+import com.starnamu.projcet.airlineschedule.R;
 
 import java.util.ArrayList;
 
@@ -15,6 +19,7 @@ public class AirLineAdapter extends BaseAdapter {
 
     ArrayList<AirlineItem> items = new ArrayList<>();
     Context mContext;
+    private int lastPosition = -1;
 
     public AirLineAdapter(Context context) {
         this.mContext = context;
@@ -51,12 +56,18 @@ public class AirLineAdapter extends BaseAdapter {
             //재활용시 재활용되는 View의 속성도 재활용 됨으로 재활용 되는 View를 초기화 해줄 필요가 있다.
             view.slidingLayoutView.setVisibility(View.GONE);
         }
+
+
         if (position % 2 == 0) {
             view.setBackgroundColor(Color.argb(255, 250, 255, 255));
         } else {
             view.setBackgroundColor(Color.argb(255, 240, 255, 255));
         }
         view.setAirlineItem(items.get(position));
+
+        Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+        view.startAnimation(animation);
+        lastPosition = position;
 
         return view;
     }

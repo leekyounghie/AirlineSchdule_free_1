@@ -27,8 +27,8 @@ public class OALArrivalAirlineFragment extends Fragment implements CommonConvent
     public AirLineAdapter airlineAdapter;
     ArrayList<AirlineItem> ItemList;
     ArrayList<AirlineItem> items;
-    int SetTime;
     CustomTimeControll customTimeControll;
+    int CustomPostion;
 
     public OALArrivalAirlineFragment() {
         AirLineItems airLineItems = AirLineItems.getNewInstance();
@@ -48,25 +48,23 @@ public class OALArrivalAirlineFragment extends Fragment implements CommonConvent
         OalArrivalAirlineListView = (ListView) v.findViewById(R.id.OalArrivalAirlineListView);
         ItemList = new ArrayList<>();
         airlineAdapter = new AirLineAdapter(getActivity());
-        Log.i("OalArr", "Strar");
 
-        if (SetTime <= 0) {
-            this.SetTime = customTimeControll.userChoiceTime(7200000L);
-        }
         for (int i = 0; i < items.size(); i++) {
             AirlineItem item = items.get(i);
             if (adCheck(item.getStriItem(10))) {
                 if (airlineCheck(item.getStriItem(0))) {
-                    if (flightCheck(item.getStriItem(3))) {
-                        if (timeCheck(item.getStriItem(4)) > SetTime) {
-                            ItemList.add(item);
-                        }
+                    if (flightCheck(item.getStriItem(7))) {
+                        ItemList.add(item);
                     }
                 }
             }
-            airlineAdapter.setItemList(ItemList);
-            OalArrivalAirlineListView.setAdapter(airlineAdapter);
         }
+        airlineAdapter.setItemList(ItemList);
+        OalArrivalAirlineListView.setAdapter(airlineAdapter);
+        Log.i("ItemList.Size", Integer.toString(ItemList.size()));
+        CustomPostion = customTimeControll.onCustomCompare(ItemList);
+        OalArrivalAirlineListView.requestFocusFromTouch();
+        OalArrivalAirlineListView.setSelection(CustomPostion-3);
         return v;
     }
 
@@ -78,23 +76,31 @@ public class OALArrivalAirlineFragment extends Fragment implements CommonConvent
     @Override
     public void onResume() {
         super.onResume();
+        OalArrivalAirlineListView.requestFocusFromTouch();
+        OalArrivalAirlineListView.setSelection(CustomPostion);
     }
 
-    public void choiceTime(int choiceTime) {
-        this.SetTime = choiceTime;
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
-    /*Arraylist의 지료를 원하는 형태로 걸러낸다.*/
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     private boolean adCheck(String airline) {
         if (airline.equals("A")) {
             return true;
         }
         return false;
-    }
-
-    private int timeCheck(String time) {
-        int intTime = Integer.parseInt(time);
-        return intTime;
     }
 
     private boolean airlineCheck(String airline) {
@@ -107,9 +113,9 @@ public class OALArrivalAirlineFragment extends Fragment implements CommonConvent
     }
 
     private boolean flightCheck(String flight) {
-        if (flight.length() <= 6) {
-            return true;
+        if (flight.length() <= 2) {
+            return false;
         }
-        return false;
+        return true;
     }
 }

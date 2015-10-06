@@ -59,21 +59,14 @@ public class AlarmDBControll implements CommonConventions {
         db.close();
     }
 
-    /*public void removeData(int position) {
-        SQLiteDatabase db = opener.getReadableDatabase();
-
-        db.delete(AlarmTableName, "_id" + " = " + position, null);
-        Log.i("AlarmDBControll", position + "RemoveData Sucess");
-        db.close();
-    }*/
-
     public void removeData(int position) {
         String str = "'" + AlarmItems.get(position).getStriItem(3) + "'";
         SQLiteDatabase db = opener.getReadableDatabase();
         String sql = "delete from " + AlarmTableName + " where flightId = " + str + ";";
         db.execSQL(sql);
 
-        Log.i("Database", "delete data");
+        Log.i("AlarmDBControll", position + "RemoveData Sucess");
+        db.close();
     }
 
     public void removeData(String FlightId) {
@@ -81,35 +74,8 @@ public class AlarmDBControll implements CommonConventions {
         String sql = "delete from " + AlarmTableName + " where flightId = " + FlightId + ";";
         db.execSQL(sql);
 
-        Log.i("Database", "delete data");
+        Log.i("AlarmDBControll", FlightId + "RemoveData Sucess");
     }
-
-
-    /*DB에 있는 시간을 업데이트 하는중*/
-/*
-    public void updateData(String FlightId) {
-        removeData(FlightId);
-        SQLiteDatabase db = opener.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        db.update(AlarmTableName,values,"flight=?",)
-
-
-        for (int j = 0; j < PARSERITEMGROUP.length; j++) {
-            values.put(PARSERITEMGROUP[j], AlarmItem.getStriItem(j));
-        }
-        db.insert(AlarmTableName, null, values);
-        db.close();
-    }*/
-
-   /* *//*SQLiteDatabase를 스토리지에서 삭제한다.*//*
-    public void myDatabaseDelete() {
-        File dbpath = mContext.getDatabasePath(SchduleDbName);
-        Log.i("MYDatabase", dbpath.toString());
-        mContext.deleteDatabase(SchduleDbName);
-        dbpath.exists();
-    }
-*/
 
     // 데이터 검색
     public ArrayList<AirlineItem> selectData(String Flight) {
@@ -146,18 +112,8 @@ public class AlarmDBControll implements CommonConventions {
             items.add(item);
             results.moveToNext();
         }
-        printLog(items);
+        Log.i("AlarmDBControll", "Data Print Sucess");
         results.close();
         return items;
-    }
-
-    private void printLog(ArrayList<AirlineItem> items) {
-        int j = items.size();
-        int k = j / 10;
-        for (int i = 0; i < k; i++) {
-            AirlineItem item = items.get(i);
-            String str = item.getStriItem(1);
-            Log.i("MyDataBase.java", str);
-        }
     }
 }
